@@ -1,0 +1,10 @@
+E:\WorkSpace\keycloak\KeycloakLoginSpi\src\main\java\cn\porsche\keycloak\spi\authenticator\password\PasswordAuthenticatorFactory.java
+E:\WorkSpace\keycloak\KeycloakLoginSpi\src\main\java\cn\porsche\keycloak\spi\util\JsonUtil.java
+E:\WorkSpace\keycloak\KeycloakLoginSpi\src\main\java\cn\porsche\keycloak\spi\authenticator\phone\PhoneAuthenticatorFactory.java
+E:\WorkSpace\keycloak\KeycloakLoginSpi\src\main\java\cn\porsche\keycloak\spi\authenticator\password\PasswordAuthenticator.java
+E:\WorkSpace\keycloak\KeycloakLoginSpi\src\main\java\cn\porsche\keycloak\spi\authenticator\wechat\WechatAuthenticatorFactory.java
+E:\WorkSpace\keycloak\KeycloakLoginSpi\src\main\java\cn\porsche\keycloak\spi\authenticator\BaseAuthenticator.java
+E:\WorkSpace\keycloak\KeycloakLoginSpi\src\main\java\cn\porsche\keycloak\spi\authenticator\BaseAuthenticatorFactory.java
+E:\WorkSpace\keycloak\KeycloakLoginSpi\src\main\java\cn\porsche\keycloak\spi\authenticator\wechat\WechatAuthenticator.java
+E:\WorkSpace\keycloak\KeycloakLoginSpi\src\main\java\cn\porsche\keycloak\spi\util\LoginType.java
+E:\WorkSpace\keycloak\KeycloakLoginSpi\src\main\java\cn\porsche\keycloak\spi\authenticator\phone\PhoneAuthenticator.java
