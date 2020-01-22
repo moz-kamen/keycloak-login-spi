@@ -80,8 +80,6 @@ https://moz-kamen.github.io/keycloak/keycloak_login_spi/keycloak-login-spi-1.0.0
 
 ###### 1、密码登陆模式
 
----
-
 ***config :***
 
 ```txt
@@ -114,8 +112,6 @@ password:123456
 ---
 
 ###### 2、手机验证码模式
-
----
 
 ***config :***
 
@@ -180,8 +176,6 @@ code:1234
 ---
 
 ###### 3、微信登录模式
-
----
 
 ***config :***
 
