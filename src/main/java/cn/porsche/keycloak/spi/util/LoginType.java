@@ -20,6 +20,15 @@ public enum LoginType {
     this.authenticatorClazz = authenticatorClazz;
   }
 
+  public static boolean containsCode(String code) {
+    for (LoginType loginType : LoginType.values()) {
+      if (loginType.getCode().equals(code)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   public String getCode() {
     return code;
   }

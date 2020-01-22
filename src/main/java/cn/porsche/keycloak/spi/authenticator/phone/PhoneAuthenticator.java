@@ -1,12 +1,14 @@
 package cn.porsche.keycloak.spi.authenticator.phone;
 
 import cn.porsche.keycloak.spi.authenticator.BaseAuthenticator;
+import cn.porsche.keycloak.spi.util.AuthenticationError;
+import cn.porsche.keycloak.spi.util.AuthenticationException;
+import cn.porsche.keycloak.spi.util.ExceptionUtils;
 import cn.porsche.keycloak.spi.util.JsonUtil;
 import com.google.common.collect.Lists;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import javax.ws.rs.core.Response;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
@@ -19,7 +21,6 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.keycloak.authentication.AuthenticationFlowContext;
-import org.keycloak.authentication.AuthenticationFlowError;
 import org.keycloak.models.UserModel;
 
 public class PhoneAuthenticator extends BaseAuthenticator {
@@ -28,7 +29,14 @@ public class PhoneAuthenticator extends BaseAuthenticator {
   public void doAuthenticate(AuthenticationFlowContext context) {
     String phone = retrieveParameter(context, PhoneAuthenticatorFactory.PROPERTY_FORM_PHONE);
     String code = retrieveParameter(context, PhoneAuthenticatorFactory.PROPERTY_FORM_CODE);
+
     // 参数校验
+    if ("".equals(phone)) {
+      throw new AuthenticationException(AuthenticationError.PARAM_NOT_CHECKED_ERROR, "手机号不能为空");
+    }
+    if ("".equals(code)) {
+      throw new AuthenticationException(AuthenticationError.PARAM_NOT_CHECKED_ERROR, "验证码不能为空");
+    }
 
     // 使用手机号查询用户
     List<UserModel> userModelList = context.getSession().userStorageManager().searchForUserByUserAttribute(
@@ -40,17 +48,13 @@ public class PhoneAuthenticator extends BaseAuthenticator {
         doSMSAuthenticate(context, phone, code);
         context.setUser(userModelList.get(0));
         context.success();
-      } catch (RuntimeException e) {
-        Response challengeResponse = getErrorResponse(Response.Status.UNAUTHORIZED.getStatusCode(), "invalid_request_runtime", e.getMessage());
-        context.failure(AuthenticationFlowError.INVALID_USER, challengeResponse);
-      } catch (IOException e) {
-        Response challengeResponse = getErrorResponse(Response.Status.UNAUTHORIZED.getStatusCode(), "invalid_request_IO", e.getMessage());
-        context.failure(AuthenticationFlowError.INVALID_USER, challengeResponse);
+      } catch (AuthenticationException e) {
+        throw e;
+      } catch (Exception e) {
+        throw new AuthenticationException(AuthenticationError.SMS_REQUEST_ERROR, ExceptionUtils.getStackTrace(e));
       }
     } else {
-      // 用户不存在
-      Response challengeResponse = getErrorResponse(Response.Status.UNAUTHORIZED.getStatusCode(), "invalid_request", "Invalid user credentials");
-      context.failure(AuthenticationFlowError.INVALID_USER, challengeResponse);
+      throw new AuthenticationException(AuthenticationError.USER_NOT_FOUNF_ERROR, "手机号", phone);
     }
   }
 
@@ -79,7 +83,7 @@ public class PhoneAuthenticator extends BaseAuthenticator {
       }
       response = client.execute(httpPost);
     } else {
-      throw new RuntimeException("invalid request method, please check authenticator config");
+      throw new AuthenticationException(AuthenticationError.CONFIG_INVALID_ERROR, PhoneAuthenticatorFactory.PROPERTY_SMS_REQUEST_METHOD + requestMethod);
     }
 
     String checkKey = getPropertyValue(context, PhoneAuthenticatorFactory.PROPERTY_SMS_RESPONSE_CHECK_KEY);
@@ -99,9 +103,12 @@ public class PhoneAuthenticator extends BaseAuthenticator {
           (value instanceof Integer && Integer.parseInt(checkValue) == (Integer) value) ||
           (value instanceof Boolean && Boolean.valueOf(checkValue) == value)) {
         return;
+      } else {
+        throw new AuthenticationException(AuthenticationError.PHONE_CODE_INVALID_ERROR);
       }
+    } else {
+      throw new AuthenticationException(AuthenticationError.SMS_REQUEST_ERROR, String.valueOf(response.getStatusLine().getStatusCode()));
     }
-    throw new RuntimeException("check phone code fail");
   }
 
   private Map<String, Object> buildRequestParam(AuthenticationFlowContext context, String phone, String code) {
