@@ -23,4 +23,7 @@ https://moz-kamen.github.io/keycloak/keycloak_login_spi/keycloak-login-spi-1.0.0
 1、新增 authentication flow
 
 ***点击新增按钮 :***
-![](https://moz-kamen.github.io/keycloak/keycloak_login_spi/image/001_add_authenticator_1.png)
+![add_authenticator_1](https://moz-kamen.github.io/keycloak/keycloak_login_spi/image/001_add_authenticator_1.png)
+
+***填写 alias 点击保存 :***
+![add_authenticator_2](https://moz-kamen.github.io/keycloak/keycloak_login_spi/image/002_add_authenticator_2.png)
