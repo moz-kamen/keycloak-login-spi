@@ -1,3 +1,0 @@
-cn.porsche.keycloak.spi.authenticator.password.PasswordAuthenticatorFactory
-cn.porsche.keycloak.spi.authenticator.phone.PhoneAuthenticatorFactory
-cn.porsche.keycloak.spi.authenticator.wechat.WechatAuthenticatorFactory
