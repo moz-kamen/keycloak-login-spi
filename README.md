@@ -54,7 +54,7 @@ https://moz-kamen.github.io/keycloak/keycloak_login_spi/keycloak-login-spi-1.0.0
 
 ***编辑用户属性 :***
 
-![exit_user_1](https://moz-kamen.github.io/keycloak/keycloak_login_spi/image/exit_user_1.png)
+![edit_user_1](https://moz-kamen.github.io/keycloak/keycloak_login_spi/image/edit_user_1.png)
 
 
 
@@ -73,6 +73,10 @@ https://moz-kamen.github.io/keycloak/keycloak_login_spi/keycloak-login-spi-1.0.0
 ***添加配置 :***
 
 ![edit_excution_2](https://moz-kamen.github.io/keycloak/keycloak_login_spi/image/edit_excution_2.png)
+
+***推荐完整配置 :***
+
+![suggest_execution_flow](https://moz-kamen.github.io/keycloak/keycloak_login_spi/image/suggest_execution_flow.png)
 
 
 
