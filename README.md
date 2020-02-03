@@ -102,7 +102,7 @@ login form key - password
 ***request :***
 
 ```txt
-http://localhost:8080/auth/realms/master/protocol/openid-connect/token
+POST http://localhost:8080/auth/realms/master/protocol/openid-connect/token
 
 Content-Type:application/x-www-form-urlencoded
 
@@ -168,7 +168,7 @@ sms response check - value
 ***request :***
 
 ```txt
-http://localhost:8080/auth/realms/master/protocol/openid-connect/token
+POST http://localhost:8080/auth/realms/master/protocol/openid-connect/token
 
 Content-Type:application/x-www-form-urlencoded
 
@@ -202,7 +202,7 @@ login form key - wechat unionid
 ***request :***
 
 ```txt
-http://localhost:8080/auth/realms/master/protocol/openid-connect/token
+POST http://localhost:8080/auth/realms/master/protocol/openid-connect/token
 
 Content-Type:application/x-www-form-urlencoded
 
@@ -211,4 +211,133 @@ client_id:client001
 login_type:wechat
 wechat_unionid:wx_123456
 ```
+
+
+
+#### 七、Keycloak部分接口说明
+
+***官方接口文档地址 :***
+
+https://www.keycloak.org/docs-api/8.0/rest-api/index.html
+
+调用admin相关接口需要传入授权令牌
+
+可以使用root用户先以接口方式获取授权令牌，再用来调用以下接口
+
+root授权令牌默认超时时间为1分钟
+
+
+
+###### 1、新增用户
+
+```txt
+POST http://localhost:8080/auth/admin/realms/master/users
+
+Content-Type:application/json
+
+{
+	"username": "liang.xu2",
+	"credentials": [{
+		"type": "password",
+		"value": "liang.xu2",
+		"temporary": false
+	}],
+	"enabled": true
+}
+```
+
+
+
+###### 2、使用用户名查询用户
+
+>可通过此接口获取用户id
+>
+>该查询为模糊查询，查询结果需要二次校验用户名是否匹配
+
+```
+GET http://localhost:8080/auth/admin/realms/master/users?username=liang.xu2
+```
+
+
+
+###### 3、重置密码
+
+```
+PUT http://localhost:8080/auth/admin/realms/master/users/{id}/reset-password
+
+Content-Type:application/json
+
+{
+	"type": "password",
+    "value": "123456",
+    "temporary": false
+}
+```
+
+
+
+###### 3、为用户添加属性
+
+>更新用户属性仅有全量更新的方式可用，所以需要先查询出用户已有属性，在新增属性后，将全量属性更新到用户信息中。
+>
+>此处应该将查询到更新完成应保证事务的原子性，可使用分布式锁实现
+
+```txt
+GET http://localhost:8080/auth/admin/realms/master/users/{id}
+```
+
+```txt
+PUT http://localhost:8080/auth/admin/realms/master/users/{id}
+
+Content-Type:application/json
+
+{
+	"attributes": {
+		"phone": "12300000000"
+	}
+}
+```
+
+
+
+#### 八、自定义登录设计思路
+
+>由于 keycloak 未提供使用用户自定义属性检索用户的 rest 接口，所以也无法对自定义属性进行重复校验
+>
+>推荐对接 keycloak 对外提供服务的中间件应当持久化用户与第三方登录所需唯一键的映射关系
+>
+>用来完成用户是否已存在，以及第三方唯一键是否重复等相关校验
+>
+>但需要保证所有映射关系的添加都经过中间件，而不是直接在 keycloak 管理页面完成
+
+
+
+***以手机登录为例 :***
+
+```mermaid
+graph TD
+	action_login((登陆)) --> condition_phone_isExist{手机号是否存在}
+	condition_phone_isExist --> |存在|result_phone_exist[尝试登陆]
+	condition_phone_isExist --> |不存在|result_phone_not_exist{引导用户绑定手机}
+	
+	result_phone_not_exist --> |引导绑定已有帐号|show_login[展示用户名密码登录页]
+    show_login --> login1{用户登录}
+    login1 --> |登陆失败|bingding_fail((结束))
+	login1 --> |登陆成功|get_jwt1[获得jwt令牌]
+	get_jwt1 --> |jwt中解析用户数据|save_relation1[中间件中持久化关联]
+	save_relation1 --> save_attribute1[keycloak中为用户添加手机号属性]
+	save_attribute1 --> login_again1[再次使用用户名密码登录获取最新jwt]
+	login_again1 --> response_jwt1((登陆成功,返回jwt))
+	
+	result_phone_not_exist --> |引导完成新用户注册|show_register[展示注册页面]
+	show_register --> register{用户注册}
+	register --> |手机号重复|reegister_fail((结束))
+	register --> |手机号可用|add_user[添加用户并初始化默认密码]
+	add_user --> is_auto_login{是否自动登录}
+	is_auto_login --> |无需自动登录|redirect_login_page((跳转至登录页))
+	is_auto_login --> |需要自动登录|login2[后端使用默认密码登录该用户]
+	login2 --> response_jwt2((登陆成功,返回jwt))
+```
+
+
 
