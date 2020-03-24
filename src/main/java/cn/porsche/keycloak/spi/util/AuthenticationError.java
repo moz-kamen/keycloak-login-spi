@@ -19,6 +19,8 @@ public enum AuthenticationError {
 
   SMS_REQUEST_ERROR(HttpStatus.SC_INTERNAL_SERVER_ERROR, AuthenticationFlowError.IDENTITY_PROVIDER_ERROR,
       "8001", "短信服务调用失败: %s", "短信服务调用失败"),
+  EMS_REQUEST_ERROR(HttpStatus.SC_INTERNAL_SERVER_ERROR, AuthenticationFlowError.IDENTITY_PROVIDER_ERROR,
+      "8002", "邮件服务调用失败: %s", "邮件服务调用失败"),
 
   PARAM_NOT_CHECKED_ERROR(HttpStatus.SC_BAD_REQUEST, AuthenticationFlowError.IDENTITY_PROVIDER_ERROR,
       "9001", "参数校验异常: %s", "参数校验异常"),
