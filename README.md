@@ -5,10 +5,15 @@
 
 ### 设计思路
 通过对 oauth2 中 grant_type: password 的登陆模式进行拓展
+
 提供新的登录入参并重写登录实现逻辑
 
+
+
 选择 Custome Login Authenticator 作为 Authentication Flow 时
+
 将会串行执行其中包含的多个 execution (Login Authenticator Implement)
+
 通过判断新增的参数 login_type , 仅有一个 execution 会作为实际的鉴权过程
 
 
