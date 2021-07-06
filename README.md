@@ -28,7 +28,7 @@ https://github.com/keycloak/keycloak/releases/tag/13.0.0
 
 #### 二、使用自定义插件
 
-https://moz-kamen.github.io/keycloak/keycloak_login_spi/keycloak-login-spi-1.0.0-SNAPSHOT.jar
+https://github.com/moz-kamen/keycloak-login-spi/releases/tag/13.0.0-RELEASE
 
 在 ***keycloak*** 根目录下创建 ***providers*** 文件夹
 
