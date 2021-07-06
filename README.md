@@ -18,9 +18,13 @@
 
 
 ### 使用流程
-#### 一、下载解压 keycloak server
+#### 一、下载解压 keycloak server 
 
-https://www.keycloak.org/downloads.html
+keycloak.version : 13.0.0
+
+https://github.com/keycloak/keycloak/releases/tag/13.0.0
+
+
 
 #### 二、使用自定义插件
 
@@ -33,6 +37,7 @@ https://moz-kamen.github.io/keycloak/keycloak_login_spi/keycloak-login-spi-1.0.0
 ###### windows : ***$keycloak/bin/standalone.bat*** 
 
 ###### linux : ***$keycloak/bin/standalone.sh*** 
+
 
 
 
